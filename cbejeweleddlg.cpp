@@ -1,5 +1,6 @@
 ﻿#include "cbejeweleddlg.h"
 #include "ui_cbejeweleddlg.h"
+#include "QMovie"
 
 CBejeweledDlg::CBejeweledDlg(QWidget *parent)
     : QMainWindow(parent)
@@ -18,6 +19,9 @@ CBejeweledDlg::CBejeweledDlg(QWidget *parent)
     pe.setColor(QPalette::WindowText,Qt::white);
     ui->label_welcome->setPalette(pe);
 
+    QMovie *movie = new QMovie(":/xyyResource/night-9061_512.gif");
+    ui->label->setMovie(movie);
+    movie->start();
 }
 
 CBejeweledDlg::~CBejeweledDlg()

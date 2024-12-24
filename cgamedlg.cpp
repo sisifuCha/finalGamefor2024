@@ -46,7 +46,7 @@ CGameDlg::CGameDlg(QWidget *parent) :
         number[i].load(path);
     }
     circle.load(":/new/picture/circle.png");
-    pixmap_di.load(":/new/picture/select.png");//被选中显示
+    pixmap_di.load(":/xyyResource/frame-7593806_1280.png");//被选中显示
     disappear1.load(":/new/picture/tx1.png");
     disappear2.load(":/new/picture/tx2.png");
     disappear3.load(":/new/picture/tx3.png");//三消的动画过程

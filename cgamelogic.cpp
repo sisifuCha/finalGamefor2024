@@ -52,7 +52,7 @@ void CGameLogic::BuildMap(int gemspecies){
         }
     }
 
-    qDebug()<<"\n====这是生成的宝石地图（1-n表示宝石号码），若要删除这个显示，在cgamelogic.cpp下的BuildMap()函数末尾=====";
+    qDebug()<<"CGameLogic::BuildMap生成的宝石地图";
     for(int n=0;n<maprownum;n++){
         QString temp="";
         for(int m =0;m<mapcolnum;m++){
@@ -98,8 +98,9 @@ bool CGameLogic::eliminate(bool noChange)
     if(!game_running)
         return false;
     int eliminate_number[8] = {0, 0, 0, 0, 0, 0, 0, 0};//各色宝石消除数量
-    bool isChange = false;//当前图是否可消除
-    int current = 0;//当前宝石颜色
+    bool changeAvailable = false;//当前图是否可消除
+
+    int currentType = 0;//当前宝石颜色
     int temp_aMap[8][8];
     memcpy(temp_aMap, m_aMap, sizeof(m_aMap));
 
@@ -107,41 +108,41 @@ bool CGameLogic::eliminate(bool noChange)
     for(int j = 0; j < 8; j++)
         for(int i = 0; i < 6; i++)
         {
-            current = m_aMap[i][j];
-            if(current == m_aMap[i + 1][j] && current == m_aMap[i + 2][j])
+            currentType = m_aMap[i][j];
+            if(currentType == m_aMap[i + 1][j] && currentType == m_aMap[i + 2][j])
             {
                 temp_aMap[i][j] = 0;
                 temp_aMap[i + 1][j] = 0;
                 temp_aMap[i + 2][j] = 0;
                 /*五连*/
-                if(noChange && i + 4 < 8 && m_aMap[i + 3][j] == current && m_aMap[i + 4][j] == current)
+                if(noChange && i + 4 < 8 && m_aMap[i + 3][j] == currentType && m_aMap[i + 4][j] == currentType)
                 {
                     g_props_color++;
                     g_props_cross--;
                 }
-                isChange = true;
+                changeAvailable = true;
             }
         }
     for(int j = 0; j < 8; j++)
         for(int i = 0; i < 6; i++)
         {
-            current = m_aMap[j][i];
-            if(current == m_aMap[j][i + 1] && current == m_aMap[j][i + 2])
+            currentType = m_aMap[j][i];
+            if(currentType == m_aMap[j][i + 1] && currentType == m_aMap[j][i + 2])
             {
                 temp_aMap[j][i] = 0;
                 temp_aMap[j][i + 1] = 0;
                 temp_aMap[j][i + 2] = 0;
                 /*五连*/
-                if(noChange && i + 4 < 8 && m_aMap[j][i + 4] == current && m_aMap[j][i + 3] == current)
+                if(noChange && i + 4 < 8 && m_aMap[j][i + 4] == currentType && m_aMap[j][i + 3] == currentType)
                 {
                     g_props_color++;
                     g_props_cross--;
                 }
-                isChange = true;
+                changeAvailable = true;
             }
         }
     if(noChange)
-        return isChange;
+        return changeAvailable;
 
     /*统计各色宝石消除量*/
     for(int i = 0; i < 8; i++)
@@ -160,7 +161,7 @@ bool CGameLogic::eliminate(bool noChange)
 
     memcpy(m_aMap, temp_aMap, sizeof(m_aMap));
 
-    return isChange;
+    return changeAvailable;
 }
 
 bool CGameLogic::down()//每调用一次全图可以下移的下移一次
