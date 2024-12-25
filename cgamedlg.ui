@@ -47,7 +47,7 @@ border-image: url(:/pic1.jpg);}</string>
       <family>微软雅黑</family>
       <pointsize>10</pointsize>
       <italic>false</italic>
-      <bold>false</bold>
+      <fontweight></fontweight>
      </font>
     </property>
     <property name="styleSheet">
@@ -60,7 +60,7 @@ border-image: url(:/pic1.jpg);}</string>
      <number>60</number>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
     <property name="textVisible">
      <bool>true</bool>
@@ -370,6 +370,19 @@ background-color: rgb(105, 139, 105);</string>
      <string>帮助</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>130</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>shop</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -377,7 +390,7 @@ background-color: rgb(105, 139, 105);</string>
      <x>0</x>
      <y>0</y>
      <width>642</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

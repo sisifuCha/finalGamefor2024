@@ -2,6 +2,8 @@
 #include "ui_cgamedlg.h"
 #include "chelpdlg.h"
 #include "cmaildlg.h"
+#include"cshopdlg.h"
+#include<QString>
 CGameDlg::CGameDlg(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CGameDlg)
@@ -33,6 +35,21 @@ CGameDlg::CGameDlg(QWidget *parent) :
             gamelogic->point[i][j]=-1;
         }
     }
+    iniRecources();
+
+    //道具按钮
+    this->ui->pushButton_boom->setCheckable(true);
+    this->ui->pushButton_cross->setCheckable(true);
+    this->ui->pushButton_color->setCheckable(true);
+}
+
+CGameDlg::~CGameDlg()
+{
+    delete ui;
+}
+
+void CGameDlg::iniRecources(){
+    //加载宝石图片
     QString path;
     int i;
     for(i=0;i<8;i++)
@@ -46,16 +63,11 @@ CGameDlg::CGameDlg(QWidget *parent) :
         number[i].load(path);
     }
     circle.load(":/new/picture/circle.png");
-    pixmap_di.load(":/xyyResource/frame-7593806_1280.png");//被选中显示
+    pixmap_di.load(":/new/picture/select.png");//被选中显示
     disappear1.load(":/new/picture/tx1.png");
     disappear2.load(":/new/picture/tx2.png");
     disappear3.load(":/new/picture/tx3.png");//三消的动画过程
     disappear3.load(":/new/picture/tx3.png");
-
-    //道具按钮
-    this->ui->pushButton_boom->setCheckable(true);
-    this->ui->pushButton_cross->setCheckable(true);
-    this->ui->pushButton_color->setCheckable(true);
 
     //音乐按钮图片
     QIcon icoOn(":/music on.png");
@@ -66,14 +78,7 @@ CGameDlg::CGameDlg(QWidget *parent) :
     ui->pushButton->setFlat(true);
     ui->pushButton_2->setIconSize(QSize(40,40));
     ui->pushButton_2->setFlat(true);
-
 }
-
-CGameDlg::~CGameDlg()
-{
-    delete ui;
-}
-
 
 void CGameDlg::paintEvent(QPaintEvent *event){
     QPainter painter(this);
@@ -85,11 +90,13 @@ void CGameDlg::paintEvent(QPaintEvent *event){
             //qDebug()<<num;
             //painter.drawPixmap(20+i*50,50+j*50,50,50,pixmap[num-1]);
             painter.drawPixmap(20+j*50,50+i*50,50,50,pixmap[num-1]);
-            if(isSelected[i][j]==1){//被选中的框
+            //重画选中框
+            if(isSelected[i][j]==1){
                 painter.drawPixmap(20+j*50,50+i*50,50,50,pixmap_di);
                 isSelected[i][j]=0;
             }
-            if(i==gamelogic->point[0][0]&&j==gamelogic->point[0][1]){//提示的框
+            //重画提示框
+            if(i==gamelogic->point[0][0]&&j==gamelogic->point[0][1]){
                 painter.drawPixmap(20+j*50,50+i*50,50,50,pixmap_di);
                 gamelogic->point[0][0]=gamelogic->point[0][1]=-1;//初始化
             }
@@ -97,25 +104,26 @@ void CGameDlg::paintEvent(QPaintEvent *event){
                 painter.drawPixmap(20+j*50,50+i*50,50,50,pixmap_di);
                 gamelogic->point[1][0]=gamelogic->point[1][1]=-1;//初始化
             }
+            //画消失动画
             if(midSituation[i][j]==1){
                 painter.drawPixmap(20+j*50,50+i*50,50,50,disappear1);
             }else if(midSituation[i][j]==2){
                 painter.drawPixmap(20+j*50,50+i*50,50,50,disappear2);
             }else if(midSituation[i][j]==3){
                 painter.drawPixmap(20+j*50,50+i*50,50,50,disappear3);
-                //加分动画
-
-                midSituation[i][j]=0;
+            //加分动画
+            midSituation[i][j]=0;
             }
         }
     }
+    //计分板图片更新
     for(int i=0;i<string_grade.length();i++){
-        painter.drawPixmap(530+i*20,80,20,50,number[string_grade[i]-48]);//计分板图片更新
+        painter.drawPixmap(530+i*20,80,20,50,number[string_grade[i]-48]);
     }
-    if(eli_music==1){
+    /*if(eli_music==1){
         //mus1->Music_eliminate();
         eli_music=0;
-    }
+    }*/
 }
 
 void CGameDlg::closeEvent(QCloseEvent *event)
@@ -132,8 +140,11 @@ void CGameDlg::closeEvent(QCloseEvent *event)
 }
 */
 void CGameDlg::mousePressEvent(QMouseEvent *ev){
-    int eli_number=0;
+
+
     if(!gamelogic->game_running)return;
+    int eli_number=0;//统计消除了多少子，计算得分
+
     QPainter painter(this);
     mouseflag=1;
     int xx;
@@ -141,21 +152,25 @@ void CGameDlg::mousePressEvent(QMouseEvent *ev){
     xx=ev->x()-20;
     yy=ev->y()-50;
     focus_y=xx/50;
-    focus_x=yy/50;//把点击的坐标翻译成了宝石矩阵的行列号，便于下面访问算法
+    focus_x=yy/50;//点击坐标对应行列号
+
     if(focus_x<8&&focus_y<8){//仅在8*8宝石范围内相应鼠标点击事件
         if(focus==0){
             point.setX(focus_x);
-            point.setY(focus_y);//存下了第一次点击的横纵坐标（换算后的，可以直接用来访问矩阵）
+            point.setY(focus_y);//存下了第一次点击的横纵坐标
+
             isSelected[focus_x][focus_y]=1;
-            focus=1;
+            focus=1;//表示已经有第一次选中
             this->repaint();//其实是调用了paintevent
         }
 
-        //道具部分
+        //检测道具使用情况
         if(props){
+
             if(boom){
                 this->ui->pushButton_boom->setChecked(false);
                 gamelogic->propsEliminate(1,focus_x,focus_y);
+                //重置道具数量
                 ui->label_boom->setText(QString::number(g_props_boom));
                 props=false;
                 boom=false;
@@ -163,6 +178,7 @@ void CGameDlg::mousePressEvent(QMouseEvent *ev){
             else if(cross){
                 this->ui->pushButton_cross->setChecked(false);
                 gamelogic->propsEliminate(2,focus_x,focus_y);
+                //重置道具数量
                 ui->label_cross->setText(QString::number(g_props_cross));
                 props=false;
                 cross=false;
@@ -170,21 +186,22 @@ void CGameDlg::mousePressEvent(QMouseEvent *ev){
             else if(color){
                 this->ui->pushButton_color->setChecked(false);
                 gamelogic->propsEliminate(3,focus_x,focus_y);
+                //重置道具数量
                 ui->label_color->setText(QString::number(g_props_color));
                 props=false;
                 color=false;
             }
 
-
+            //道具使用后调整gameLogic的m_amap矩阵情况，标记那些子被消除
             do{
-                eli_music=1;
+                //eli_music=1;
                 eliminateNumber = 0;
                 for(int i = 0; i < 8; i++){
                     for(int j = 0; j < 8; j++)
                     {
                         if(gamelogic->m_aMap[i][j] == 0)
                         {
-                            eliminateNumber++;//这个是0的个数 消除数
+                            eliminateNumber++;//消除数统计
                             midSituation[i][j]=1;//状态1
                         }
                     }
@@ -221,6 +238,7 @@ void CGameDlg::mousePressEvent(QMouseEvent *ev){
                         }
                     }
                 }
+                //更新道具数量显示
                 ui->label_boom->setText(QString::number(g_props_boom));
                 ui->label_cross->setText(QString::number(g_props_cross));
                 ui->label_color->setText(QString::number(g_props_color));
@@ -232,14 +250,14 @@ void CGameDlg::mousePressEvent(QMouseEvent *ev){
                 //                    _sleep(25);
                 //                }
                 while(gamelogic->down()){
-                   // mus->Music_down();
+                    // mus->Music_down();
                     this->repaint();
                     _sleep(100);
                 }
             } while(gamelogic->eliminate());
-        }
-
-        else{
+            //dowhile循环，保证
+        }else{
+            //没有使用道具
             int x=point.x();
             int y=point.y();//取得第一次点击的横纵坐标与新的坐标相比较
             isSelected[focus_x][focus_y]=1;
@@ -270,7 +288,7 @@ void CGameDlg::mousePressEvent(QMouseEvent *ev){
 
                 }
                 while (gamelogic->eliminate()){
-                    eli_music=1;
+                    //eli_music=1;
                     eliminateNumber = 0;
                     for(int i = 0; i < 8; i++){
                         for(int j = 0; j < 8; j++)
@@ -326,7 +344,7 @@ void CGameDlg::mousePressEvent(QMouseEvent *ev){
                     }
 
                     while(gamelogic->down()){
-                       // mus->Music_down();
+                        // mus->Music_down();
                         this->repaint();
                         _sleep(100);
                     }
@@ -352,7 +370,7 @@ void CGameDlg::mousePressEvent(QMouseEvent *ev){
             //mus1->Music_unbelievable();
 
         }
-       /* if(g_rank.nGrade / 1000 != g_spc - 5)//确定等级，每超过1000分宝石种类加1
+        /* if(g_rank.nGrade / 1000 != g_spc - 5)//确定等级，每超过1000分宝石种类加1
         {
             if(g_spc<8){
                 g_spc++;
@@ -397,11 +415,11 @@ void CGameDlg::doMainToGame()
     this->setDisabled(false);
     this->Game_start();
     //播放背景音乐
-    if(music==1){
+    /*if(music==1){
        // mus->MusicOn();
     }else{
         //mus->MusicOff();
-    }
+    }*/
 
 }
 
@@ -464,7 +482,7 @@ void CGameDlg::update_timebar(){
     ui->progressBar_time->setValue(CurrentValue);
     if(CurrentValue==0){
         //发邮件
-       // wd
+        // wd
         mail = new cmaildlg();
         mail->show();
     }
@@ -526,6 +544,28 @@ void CGameDlg::Game_over(bool saveRank){
     if(saveRank)
         ranklogic->insertIndex(ranklogic->getIndex());
 }
+
+void CGameDlg::Continue()
+{
+    timer->start();
+    label_image->hide();
+    gamelogic->setgame_running(true);
+    ui->pushButton_stop->show();
+    ui->pushButton_continue->hide();
+    ui->pushButton_stop->setEnabled(true);
+    ui->pushButton_continue->setEnabled(false);
+    //mus->gameSound->setVolume(10);
+
+}
+
+void CGameDlg::SetNumOfPorp()
+{
+    this->ui->label_boom->setText(QString::number(g_props_boom));
+    this->ui->label_color->setText(QString::number(g_props_color));
+    this->ui->label_cross->setText(QString::number(g_props_cross));
+}
+
+
 
 void CGameDlg::on_pushButton_stop_clicked()
 {
@@ -596,14 +636,14 @@ void CGameDlg::on_pushButton_restart_clicked()
 //音乐开
 void CGameDlg::on_pushButton_clicked()
 {
-    music = 1;
+    //music = 1;
     //mus->gameSound->setVolume(10);
 }
 
 //音乐关
 void CGameDlg::on_pushButton_2_clicked()
 {
-    music = 0;
+    //music = 0;
     //mus->gameSound->setVolume(0);
 }
 
@@ -681,3 +721,11 @@ void CGameDlg::on_help_btn_clicked()
     help->show();
 
 }
+
+void CGameDlg::on_pushButton_3_clicked()
+{
+    this->on_pushButton_stop_clicked();
+    CShopdlg* w=new CShopdlg(this);
+    w->show();
+}
+

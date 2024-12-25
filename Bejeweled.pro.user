@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 14.0.1, 2024-12-24T18:43:25. -->
+<!-- Written by QtCreator 14.0.1, 2024-12-25T09:15:02. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -243,12 +243,14 @@
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="bool" key="PE.EnvironmentAspect.PrintOnRun">false</value>
     <value type="QString" key="PerfRecordArgsId">-e cpu-cycles --call-graph &quot;dwarf,4096&quot; -F 250</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey"></value>
-    <value type="bool" key="ProjectExplorer.RunConfiguration.Customized">false</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Bejeweled2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/1 MyPrograms/1  PracticalTrainning/3finalGamefor2024/Bejeweled.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">D:/1 MyPrograms/1  PracticalTrainning/3finalGamefor2024/Bejeweled.pro</value>
+    <value type="bool" key="ProjectExplorer.RunConfiguration.Customized">true</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">D:/1 MyPrograms/1  PracticalTrainning/finalGamefor2024/build/Desktop_Qt_6_7_2_llvm_mingw_64_bit-Debug</value>
    </valuemap>
    <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>

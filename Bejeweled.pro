@@ -26,6 +26,7 @@ SOURCES += \
     cnamedlg.cpp \
     crankdlg.cpp \
     cranklogic.cpp \
+    cshopdlg.cpp \
     cthemedlg.cpp \
     main.cpp \
     cbejeweleddlg.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     cnamedlg.h \
     crankdlg.h \
     cranklogic.h \
+    cshopdlg.h \
     cthemedlg.h \
     smtp.h
 
@@ -53,6 +55,7 @@ FORMS += \
     cmaildlg.ui \
     cnamedlg.ui \
     crankdlg.ui \
+    cshopdlg.ui \
     cthemedlg.ui
 
 # Default rules for deployment.

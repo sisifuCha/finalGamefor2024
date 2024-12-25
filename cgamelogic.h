@@ -12,6 +12,7 @@ class CGameLogic
 public:
     CGameLogic();
     int m_aMap[8][8];//0代表空，1~n代表第n种宝石（宝石号码取值为1-8）
+
     int point[2][2];//记录交换点
     bool game_running; //游戏运行状态，该布尔变量默认为true,当在cgamelog界面中点击“暂停游戏”按钮时该值为false。true时表示游戏处于运行状态
 

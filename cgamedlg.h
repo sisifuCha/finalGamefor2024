@@ -29,7 +29,8 @@ public:
 
     void Music();
     void Game_over(bool saveRank = true); //时间耗尽时游戏结束
-
+    void Continue();
+    void SetNumOfPorp();
 signals:
     void gameToMain();
     void gameToTheme();
@@ -41,9 +42,9 @@ private slots:
     void doMainToGame();
     void doThemeToGame();
     void on_btn_gameToTheme_clicked();
-    void do_theme_background_change(QString);
-    void do_theme_gem_change(QString);
-    void on_pushButton_stop_clicked();
+    void do_theme_background_change(QString);//更换背景主题
+    void do_theme_gem_change(QString);//更换石子主题
+    void on_pushButton_stop_clicked();//暂停
     void update_timebar(); //每隔一秒timebar就更新一次的槽函数
     void Game_start();
     void on_pushButton_continue_clicked();
@@ -53,31 +54,31 @@ private slots:
     void closeEvent(QCloseEvent *event);
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
+    /**************三个道具**********/
     void on_pushButton_cross_clicked();
     void on_pushButton_color_clicked();
     void on_pushButton_boom_clicked();
 
     void on_help_btn_clicked();
 
+    void on_pushButton_3_clicked();
+
 private:
     Ui::CGameDlg *ui;
-    QTimer *timer;
-    QImage *image_stop = new QImage(":/new/picture/stop.jpg"); //游戏暂停的图片
-    QImage *image_gameover = new QImage(":/new/picture/gameover3.png"); //游戏结束的图片
-    QLabel *label_image=new QLabel(this); //存放暂停图片的容器
+
+    /*————弹出窗口————*/
     CThemeDlg *theme = new CThemeDlg();
     CGameLogic *gamelogic = new CGameLogic();
-    QPoint point;//鼠标位置
+    cmaildlg *mail;
+    CRankLogic * ranklogic = new CRankLogic();
+    //道具使用
+    bool props=false,boom=false,cross=false,color=false;
+    //鼠标位置
+    QPoint point;
     QPoint point1;
     QPoint point2;
-    QPixmap pixmap[8];//存宝石图片
-    QPixmap pixmap_di;//储存被选中框
-    QPixmap number[10];//分数图片
-    QPixmap disappear1;
-    QPixmap disappear2;
-    QPixmap disappear3;//消除泡泡的过程
-    QPixmap circle;//圆圈
-    QPixmap addscore;//加分
+    //时间
+    QTimer *timer;
     int mouseflag;
     int focus;
     int focus_x;
@@ -88,15 +89,28 @@ private:
     string string_grade;//分数转成string类型
     int addScoreSituation=-1;//加分情况的状态（0-9）
     int totaltime=60; //时间
+
+    /*图片资源*/
+    void iniRecources();
+    QPixmap pixmap[8];//存宝石图片
+    QPixmap pixmap_di;//储存被选中框
+    QPixmap number[10];//分数图片
+    //消除泡泡的过程
+    QPixmap disappear1;
+    QPixmap disappear2;
+    QPixmap disappear3;
+    QPixmap circle;//圆圈
+    //分数资源
+    QPixmap addscore;
+    QImage *image_stop = new QImage(":/new/picture/stop.jpg"); //游戏暂停的图片
+    QImage *image_gameover = new QImage(":/new/picture/gameover3.png"); //游戏结束的图片
+    QLabel *label_image=new QLabel(this); //存放暂停图片的容器
     QString gemtype; //宝石类型，其值为"gem","fish","mine",默认值为"gem"
-    int music = 1;
-    int eli_music=0;
+    //音乐
+    //int music = 1;
+    //int eli_music=0;
     //CMusicPlayer *mus = new CMusicPlayer;
     //CMusicPlayer *mus1 = new CMusicPlayer;
-    CRankLogic * ranklogic = new CRankLogic();
-    bool props=false,boom=false,cross=false,color=false; //判断是否选择道具
-    cmaildlg *mail;
-
 protected:
     void mousePressEvent(QMouseEvent *ev);
     QPoint mousePos;//鼠标位置a

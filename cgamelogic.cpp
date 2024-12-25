@@ -97,6 +97,7 @@ bool CGameLogic::eliminate(bool noChange)
 {
     if(!game_running)
         return false;
+
     int eliminate_number[8] = {0, 0, 0, 0, 0, 0, 0, 0};//各色宝石消除数量
     bool changeAvailable = false;//当前图是否可消除
 
@@ -104,7 +105,11 @@ bool CGameLogic::eliminate(bool noChange)
     int temp_aMap[8][8];
     memcpy(temp_aMap, m_aMap, sizeof(m_aMap));
 
-    /*横排判断消除*/
+    /*横排判断消除
+     * 遍历矩阵（i<6防止索引溢出）
+     * 判断最左侧是否有横向三联、五连
+     * 如果横向有三联，就修改矩阵的值为0，标记changeAvailable
+    */
     for(int j = 0; j < 8; j++)
         for(int i = 0; i < 6; i++)
         {
@@ -117,12 +122,13 @@ bool CGameLogic::eliminate(bool noChange)
                 /*五连*/
                 if(noChange && i + 4 < 8 && m_aMap[i + 3][j] == currentType && m_aMap[i + 4][j] == currentType)
                 {
-                    g_props_color++;
+                    g_props_color++;//更改道具数量
                     g_props_cross--;
                 }
                 changeAvailable = true;
             }
         }
+    //纵向判断
     for(int j = 0; j < 8; j++)
         for(int i = 0; i < 6; i++)
         {
@@ -141,16 +147,16 @@ bool CGameLogic::eliminate(bool noChange)
                 changeAvailable = true;
             }
         }
-    if(noChange)
-        return changeAvailable;
+    //根据修改标记判断是否需要修改
+    if(noChange)return changeAvailable;
 
     /*统计各色宝石消除量*/
     for(int i = 0; i < 8; i++)
         for(int j = 0; j < 8; j++)
             if(temp_aMap[i][j] == 0)
-                eliminate_number[m_aMap[i][j] - 1]++;
+                eliminate_number[m_aMap[i][j] - 1]++;//注意坐标
 
-    /*统计道具*/
+    /*统计道具使用，根据使用情况修改道具量*/
     for(int i = 0; i < 8; i++)
     {
         if(eliminate_number[i] >= 5)
@@ -174,7 +180,6 @@ bool CGameLogic::down()//每调用一次全图可以下移的下移一次
         {
             if(m_aMap[j][i] == 0)
             {
-
                 for(int k = j; k > 0; k--)
                 {
                     m_aMap[k][i] = m_aMap[k - 1][i];
